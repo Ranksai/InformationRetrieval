@@ -118,7 +118,7 @@ def kcluster(rows,distance=pearson,k=4):
 
     lastmatches=None
     for t in range(100):
-        print ('Iteration %d') % t
+        print ('Iteration %d' % t)
         bestmatches=[[] for i in range(k)]
 
         # それぞれの行に対して、もっとも近い重心を探し出す
@@ -204,4 +204,4 @@ if __name__ == '__main__':
   [yamanote[r] for r in kclust[0]]
   [yamanote[r] for r in kclust[1]]
   coords=scaledown(data)
-  coords
+  print(coords)
