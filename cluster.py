@@ -8,15 +8,17 @@ def readfile(filename):
     #lines=[line for line in file(filename)]
     file.close()
     # 最初の行は列のタイトル
-    colnames=lines[0].strip().split('\t')[1:]
+    colnames=lines[0].strip().split(' ')[1:]
     rownames=[]
     data=[]
     for line in lines[1:]:
         p=line.strip().split('\t')
+        print(p)
         # それぞれの行の最初の列は行の名前
         rownames.append(p[0])
         # 行の残りの部分がその行のデータ
         data.append([float(x) for x in p[1:]])
+    #print(data)
     return rownames,colnames,data
 
 from math import sqrt
@@ -50,8 +52,8 @@ class bicluster:
 
 def hcluster(rows,distance=pearson):
     distances={}
-    currentclustid=-1
 
+    currentclustid=-1
     # クラスタは最初は行たち
     clust=[bicluster(rows[i],id=i) for i in range(len(rows))]
 
@@ -71,13 +73,11 @@ def hcluster(rows,distance=pearson):
                 if d<closest:
                     closest=d
                     lowestpair=(i,j)
-
-    # 二つのクラスタの平均を計算する
+        # 二つのクラスタの平均を計算する
         mergevec=[(clust[lowestpair[0]].vec[i]+clust[lowestpair[1]].vec[i])/2.0 for i in range(len(clust[0].vec))]
 
         # 新たなクラスタを作る
         newcluster=bicluster(mergevec,left=clust[lowestpair[0]], right=clust[lowestpair[1]], distance=closest,id=currentclustid)
-
         # 元のセットではないクラスタのIDは負にする
         currentclustid-=1
         del clust[lowestpair[1]]
@@ -89,10 +89,10 @@ def hcluster(rows,distance=pearson):
 def printclust(clust,labels=None,n=0):
     # 階層型のレイアウトにするためにインデントする
     for i in range(n):
-       print(' ')
+       print(' ', end="")
     if clust.id<0:
         # 負のidは、枝を示す
-        print('--')
+        print('--', end="")
     else:
         # 正のidは、終端を示す
         if labels==None:
@@ -198,10 +198,20 @@ def scaledown(data,distance=pearson,rate=0.01):
 
 if __name__ == '__main__':
   yamanote,words,data=readfile('yamanote_E.txt')
+  #yamanote,words,data=readfile('blogdata.txt')
+  #print("----")
+  #print(yamanote)
+  #print(words)
+  #print(data)
+  #print("----")
+  
   clust=hcluster(data)
-  printclust(clust,labels=yamanote)
-  kclust=kcluster(data, k=10)
-  [yamanote[r] for r in kclust[0]]
-  [yamanote[r] for r in kclust[1]]
-  coords=scaledown(data)
-  print(coords)
+  printclust(clust,words)
+  #print(clust.id)
+  #print(clust.left.id)
+  #kclust=kcluster(data, k=10)
+  #[yamanote[r] for r in kclust[0]]
+  #[yamanote[r] for r in kclust[1]]
+  
+  #coords=scaledown(data)
+  #print(coords)
